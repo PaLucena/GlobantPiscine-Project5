@@ -1,43 +1,55 @@
-const	fs = require('fs');
-const	path = require('path');
-const	http = require('http');
+async function	eventListener() {
+	const	queryForm = document.getElementById('queryForm');
+	const	searchButton = document.getElementById('searchButton');
 
-console.log("Location: /unsplash-app/home/homeScript.js")
+	queryForm.addEventListener('submit', function(event) {
+		event.preventDefault();
+		const query = document.querySelector('input').value;
+		accessAPI(query);
+	});
 
-function	runHomeLogic() {
-	const	envPath = path.resolve(__dirname, '../../.env');
-	const	querySearch = 'nature';
-
-	fs.readFile(envPath, 'utf-8', (err, data) => {
-		if (err) {
-			console.error('Error at reading .env file:', err);
-		}
-
-		const	envVars = data.split('\n').reduce((acc, line) => {
-			if (line && !line.startsWith('#')) {
-				const	[key, value] = line.split('=');
-				acc[key.trim()] = value.trim();
-			}
-			return acc
-		}, {});
-
-		const	url = `https://api.unsplash.com/search/photos?query=${querySearch}&per_page=10&client_id=${envVars.ACCESS_KEY}`;
-
-		fetch(url)
-		.then (response => {
-			if (!response.ok) {
-				throw new Error('Error at API response');
-			}
-			return response.json();
-		})
-		.then (data => {
-			//console.log('Response from API:', data);
-			return (data.results);
-		})
-		.catch(error => {
-			console.error("Error (getData):", error);
-		})
+	searchButton.addEventListener('click', () => {
+		const query = document.getElementById('queryInput').value;
+		accessAPI(query);
 	});
 }
 
-module.exports = { runHomeLogic };
+async function	accessAPI(querySearch) {
+	const	env = await getEnv();
+	const	url = `https://api.unsplash.com/search/photos?query=${querySearch}&per_page=10&client_id=${env.ACCESS_KEY}`;
+
+	fetch(url)
+	.then (response => {
+		if (!response.ok) {
+			throw new Error('Error at API response');
+		}
+		return response.json();
+	})
+	.then (data => {
+		let imagesHtml = data.results.map(photo => {
+			return `<img src="${photo.urls.small}" alt="${photo.alt_description || 'Imagen de Unsplash'}" style="max-width:300px;margin:10px;">`;
+		}).join('');
+
+		document.getElementById('gallery').innerHTML = imagesHtml;
+	})
+	.catch(error => {
+		console.error("Error (getData):", error);
+	})
+}
+
+async function	getEnv() {
+	try {
+		const	response = await fetch("/api/envVars");
+		if (!response.ok)
+			throw new Error(response.status);
+		const	data = await response.json();
+		return data;
+	}
+	catch (error) {
+		console.error("Error (getEnv):", error);
+	}
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+	eventListener();
+});

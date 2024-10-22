@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/PaLucena/GlobantPiscine-Project5/issues"
   },
-  "homepage": "https://github.com/PaLucena/GlobantPiscine-Project5#readme"
+  "homepage": "https://github.com/PaLucena/GlobantPiscine-Project5#readme",
+  "dependencies": {
+    "ejs": "^3.1.10"
+  }
 }

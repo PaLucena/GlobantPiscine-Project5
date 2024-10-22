@@ -3,15 +3,24 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link rel="stylesheet" href="homeStyles.css">
 	<title>Unsplash API</title>
 </head>
 <body>
-	hola buenas
+	<div class="search-bar">
+		<div class="wrap">
+			<div class="search">
+				<form id="queryForm">
+					<input type="text" class="searchTerm" placeholder="Search from gallery" id="queryInput">
+				</form>
+				<button class="searchButton" id="searchButton">
+					<i style="font-size:24px" class="fa">&#xf002;</i>
+				</button>
+			</div>
+		</div>
+	</div>
 	<div id="gallery" class="gallery"></div>
-	<script>
-		fetch('/run-home-logic')
-			.catch(error => console.error('Error:', error));
-	</script>
+	<script src="homeScript.js"></script>
 </body>
 </html>
